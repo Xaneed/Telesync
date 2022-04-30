@@ -1,0 +1,7 @@
+[Telegram]
+api_id = 12345
+api_hash = 0123456789abcdef0123456789abcdef
+chat_id = 12345
+
+[App]
+path = /path/to/your/folder
