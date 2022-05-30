@@ -1,4 +1,5 @@
 import os
+import re
 from pyrogram import Client
 from configparser import ConfigParser
 
@@ -10,6 +11,7 @@ config.read('config.ini')
 api_id = config['Telegram']['api_id']
 api_hash = config['Telegram']['api_hash']
 chat_id = int(config['Telegram']['chat_id'])
+path = config['App']['path']
 
 # Create application instance
 app = Client('userbot', api_id, api_hash)
@@ -20,8 +22,15 @@ async def main():
       if message.audio:
         ext = os.path.splitext(message.audio.file_name)
         filename = message.audio.performer + ' - ' + message.audio.title + ext[1]
-        await app.download_media(message, filename, progress=progress, progress_args=[filename])
-        print('', end='\n')
+
+        pattern = re.compile(r'[^\w\s\d.\-_()]')
+        filename = re.sub(pattern, "", filename)
+
+        filename = path + filename
+
+        if not os.path.exists(filename):
+            await app.download_media(message, filename, progress=progress, progress_args=[filename])
+            print('', end='\n')
 
 async def progress(current, total, filename):
     print('', end='\r')
